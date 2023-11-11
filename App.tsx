@@ -3,15 +3,12 @@ import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Explore from "./components/Explore";
+import Search from "./components/Search";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
 
   // https://api.artic.edu/api/v1/artworks?page=1&limit=15
-
-  const Search = () => {
-    return <View />;
-  };
 
   const Favourite = () => {
     return <View />;

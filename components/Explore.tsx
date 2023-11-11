@@ -17,7 +17,7 @@ export default function Explore() {
     (async () => {
       try {
         const response = await fetch(
-          "https://api.artic.edu/api/v1/artworks/129884?fields=id,title,artist_display,date_display,main_reference_number,image_id"
+          "https://api.artic.edu/api/v1/artworks/129884?fields=id,title,artist_display,date_display,main_reference_number,image_id,dimensions,description"
         );
         const json = await response.json();
         setData([
