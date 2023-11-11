@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Image } from "react-native";
 
 type ArtworkData = Array<{
+  id: string;
   title: string;
-  artist: string;
-  artistID: string;
-  imageID: string;
+  artist_display: string;
+  date_display: string;
+  image_id: string;
   dimensions: string;
   description: string;
 }>;
@@ -16,20 +17,13 @@ export default function Explore() {
   useEffect(() => {
     (async () => {
       try {
+        const fields =
+          "id,title,artist_display,date_display,image_id,dimensions,description";
         const response = await fetch(
-          "https://api.artic.edu/api/v1/artworks/129884?fields=id,title,artist_display,date_display,main_reference_number,image_id,dimensions,description"
+          `https://api.artic.edu/api/v1/artworks/?fields=${fields}&limit=5`
         );
         const json = await response.json();
-        setData([
-          {
-            artist: "artist",
-            artistID: json["data"]["artist_display"].split("\n")[0],
-            title: json["data"]["title"],
-            imageID: json["data"]["image_id"],
-            dimensions: json["data"]["dimensions"],
-            description: json["data"]["description"],
-          },
-        ]);
+        setData(json.data);
       } catch (error) {
         console.error(error);
       }
@@ -52,7 +46,7 @@ export default function Explore() {
           >
             <Image
               source={{
-                uri: `https://www.artic.edu/iiif/2/${art.imageID}/full/600,/0/default.jpg`,
+                uri: `https://www.artic.edu/iiif/2/${art.image_id}/full/600,/0/default.jpg`,
               }}
               resizeMode="contain"
               style={{ width: 72, height: 72 }}

@@ -2,12 +2,14 @@ import { View, Text, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 
 type ArtworkData = Array<{
+  _score: string;
+  id: string;
   title: string;
-  //   artist: string;
-  //   artistID: string;
-  //   imageID: string;
-  //   dimensions: string;
-  //   description: string;
+  artist_display: string;
+  date_display: string;
+  image_id: string;
+  dimensions: string;
+  description: string;
 }>;
 
 export default function Search() {
@@ -17,16 +19,13 @@ export default function Search() {
   useEffect(() => {
     (async () => {
       try {
-        const fields = "title"; //  "id,title,artist_display,date_display,main_reference_number,image_id,dimensions,description";
+        const fields =
+          "id,title,artist_display,date_display,image_id,dimensions,description";
         const res = await fetch(
           `https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=${fields}`
         );
         const json = await res.json();
         setData(json.data);
-        // for (let i = 0; i < json["data"].length; i++) {
-        //   console.log(json["data"][i]);
-        // }
-        console.log(data);
       } catch (error) {
         console.error(error);
       }
