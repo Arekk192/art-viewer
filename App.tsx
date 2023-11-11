@@ -1,14 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Explore from "./components/Explore";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
 
-  const Explore = () => {
-    return <View />;
-  };
+  // https://api.artic.edu/api/v1/artworks?page=1&limit=15
 
   const Search = () => {
     return <View />;
@@ -40,12 +39,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
