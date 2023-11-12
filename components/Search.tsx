@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, TextInput, FlatList, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import Item from "./Item";
 

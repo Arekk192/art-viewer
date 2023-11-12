@@ -14,7 +14,7 @@ type Data = {
   };
 };
 
-export default function Item({ data }: Data) {
+export default React.memo(function Item({ data }: Data) {
   return (
     <View style={styles.artworkContainer}>
       <View style={styles.imageContainer}>
@@ -34,7 +34,7 @@ export default function Item({ data }: Data) {
       </View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   artworkContainer: {
