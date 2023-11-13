@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type ArtworkData = {
   _score: number | null;
@@ -20,20 +20,21 @@ type ArtworkData = {
 
 type Data = {
   data: ArtworkData;
-  favourites: ArtworkData[];
+  favourites: number[];
 };
 
 export default React.memo(function Item({ data, favourites }: Data) {
-  const checkFavourites = () => {
-    let isInFav = false;
-    for (let i = 0; i < favourites.length; i++) {
-      if (favourites[i].id == data.id) isInFav = true;
-    }
-    return isInFav;
-  };
+  const [isFavourite, setIsFavourite] = useState(false);
 
-  const [click, setClick] = useState(true);
-  const isInFavourites = checkFavourites();
+  useEffect(() => {
+    (() => {
+      if (favourites) {
+        for (let i = 0; i < favourites.length; i++) {
+          if (favourites[i] == data.id) setIsFavourite(true);
+        }
+      }
+    })();
+  }, []);
 
   return (
     <View style={styles.artworkContainer}>
@@ -54,7 +55,6 @@ export default React.memo(function Item({ data, favourites }: Data) {
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
-          setClick(!click);
           console.log(data.id);
         }}
       >
@@ -62,7 +62,7 @@ export default React.memo(function Item({ data, favourites }: Data) {
           style={[
             styles.addToFavouritesButton,
             {
-              backgroundColor: isInFavourites && click ? "blue" : "deepskyblue",
+              backgroundColor: isFavourite ? "blue" : "deepskyblue",
             },
           ]}
         />
