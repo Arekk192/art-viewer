@@ -1,20 +1,40 @@
-import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
+import React, { useState } from "react";
 
-type Data = {
-  data: {
-    _score: string;
-    id: string;
-    title: string;
-    artist_display: string;
-    date_display: string;
-    image_id: string;
-    dimensions: string;
-    description: string;
-  };
+type ArtworkData = {
+  _score: number | null;
+  id: number;
+  title: string;
+  artist_display: string;
+  date_display: string;
+  image_id: string;
+  dimensions: string;
+  description: string | null;
 };
 
-export default React.memo(function Item({ data }: Data) {
+type Data = {
+  data: ArtworkData;
+  favourites: ArtworkData[];
+};
+
+export default React.memo(function Item({ data, favourites }: Data) {
+  const checkFavourites = () => {
+    let isInFav = false;
+    for (let i = 0; i < favourites.length; i++) {
+      if (favourites[i].id == data.id) isInFav = true;
+    }
+    return isInFav;
+  };
+
+  const [click, setClick] = useState(true);
+  const isInFavourites = checkFavourites();
+
   return (
     <View style={styles.artworkContainer}>
       <View style={styles.imageContainer}>
@@ -32,6 +52,21 @@ export default React.memo(function Item({ data }: Data) {
           {data.artist_display.split("\n")[0]}
         </Text>
       </View>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          setClick(!click);
+          console.log(data.id);
+        }}
+      >
+        <View
+          style={[
+            styles.addToFavouritesButton,
+            {
+              backgroundColor: isInFavourites && click ? "blue" : "deepskyblue",
+            },
+          ]}
+        />
+      </TouchableWithoutFeedback>
     </View>
   );
 });
@@ -40,7 +75,9 @@ const styles = StyleSheet.create({
   artworkContainer: {
     flex: 1,
     height: 80,
-    paddingHorizontal: 4,
+    // paddingHorizontal: 4,
+    paddingLeft: 4,
+    paddingRight: 8,
     paddingVertical: 4,
     backgroundColor: "green",
     borderRadius: 8,
@@ -66,4 +103,5 @@ const styles = StyleSheet.create({
   artworkArtist: {
     fontSize: 10,
   },
+  addToFavouritesButton: { width: 28, height: 28, backgroundColor: "blue" },
 });
