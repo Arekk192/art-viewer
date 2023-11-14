@@ -1,6 +1,13 @@
-import { View, TextInput, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import Item from "./Item";
+import Item from "./components/Item";
+import colors from "../static/colors";
 
 type ArtworkData = {
   _score: number | null;
@@ -57,6 +64,7 @@ export default function Search() {
           ListFooterComponent={() => <View style={styles.padding} />}
           showsVerticalScrollIndicator={false}
           style={styles.flatlist}
+          keyExtractor={(_, index) => index.toString()}
         />
       ) : (
         <></>
@@ -65,26 +73,29 @@ export default function Search() {
   );
 }
 
+const screenWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: colors.darkBlack },
   flatlist: {
     flex: 1,
     paddingHorizontal: 12,
   },
   padding: { height: 8, flex: 1 },
   textInputContainer: {
-    height: 40,
+    height: 36,
     alignItems: "center",
-    marginTop: 8,
-    marginBottom: 12,
+    marginTop: 12,
+    marginBottom: 4,
   },
   textInput: {
     margin: "auto",
-    width: 320,
-    height: 40,
+    width: screenWidth - 24,
+    height: 36,
     borderRadius: 8,
     borderWidth: 1,
-    backgroundColor: "green",
-    paddingHorizontal: 4,
+    backgroundColor: colors.darkerGray,
+    borderColor: colors.darkGray,
+    color: colors.white,
+    paddingHorizontal: 8,
   },
 });

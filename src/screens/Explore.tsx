@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import Item from "./Item";
+import Item from "./components/Item";
+import colors from "../static/colors";
 
 type ArtworkData = {
   _score: number | null;
@@ -47,13 +48,17 @@ export default function Explore() {
         showsVerticalScrollIndicator={false}
         style={styles.flatlist}
         onEndReached={() => fetchData()}
+        keyExtractor={(_, index) => index.toString()}
       />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  flatlist: { flex: 1, paddingHorizontal: 12 },
-  padding: { height: 8, flex: 1 },
+  flatlist: {
+    flex: 1,
+    paddingHorizontal: 12,
+    backgroundColor: colors.darkBlack,
+  },
+  padding: { height: 10, flex: 1 },
 });

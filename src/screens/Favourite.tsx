@@ -2,7 +2,8 @@ import { View, FlatList, StyleSheet } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import Item from "./Item";
+import Item from "./components/Item";
+import colors from "../static/colors";
 
 type ArtworkData = {
   _score: number | null;
@@ -57,13 +58,17 @@ export default function Favourite() {
         ListFooterComponent={() => <View style={styles.padding} />}
         showsVerticalScrollIndicator={false}
         style={styles.flatlist}
+        keyExtractor={(_, index) => index.toString()}
       />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  flatlist: { flex: 1, paddingHorizontal: 12 },
+  flatlist: {
+    flex: 1,
+    paddingHorizontal: 12,
+    backgroundColor: colors.darkBlack,
+  },
   padding: { height: 8, flex: 1 },
 });
