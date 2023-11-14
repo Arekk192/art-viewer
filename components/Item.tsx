@@ -5,7 +5,9 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 type ArtworkData = {
   _score: number | null;
@@ -20,21 +22,36 @@ type ArtworkData = {
 
 type Data = {
   data: ArtworkData;
-  favourites: number[];
+  onClick?: () => void;
 };
 
-export default React.memo(function Item({ data, favourites }: Data) {
+export default React.memo(function Item({ data, onClick }: Data) {
   const [isFavourite, setIsFavourite] = useState(false);
 
-  useEffect(() => {
-    (() => {
-      if (favourites) {
-        for (let i = 0; i < favourites.length; i++) {
-          if (favourites[i] == data.id) setIsFavourite(true);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          let _isFavourite = false;
+          const keys = await AsyncStorage.getAllKeys();
+          keys.forEach((key) => {
+            if (key === data.id.toString()) _isFavourite = true;
+          });
+          setIsFavourite(_isFavourite);
+        } catch (error) {
+          console.error(error);
         }
-      }
-    })();
-  }, []);
+      })();
+    }, [])
+  );
+
+  const defaultOnClick = async () => {
+    const { id, ...object } = data;
+    !isFavourite
+      ? await AsyncStorage.setItem(id.toString(), JSON.stringify(object))
+      : await AsyncStorage.removeItem(id.toString());
+    setIsFavourite(!isFavourite);
+  };
 
   return (
     <View style={styles.artworkContainer}>
@@ -50,13 +67,13 @@ export default React.memo(function Item({ data, favourites }: Data) {
       <View style={styles.artworkDataContainer}>
         <Text style={styles.artworkTitle}>{data.title}</Text>
         <Text style={styles.artworkArtist}>
-          {data.artist_display.split("\n")[0]}
+          {data.artist_display?.split("\n")[0]}
         </Text>
       </View>
       <TouchableWithoutFeedback
-        onPress={() => {
-          console.log(data.id);
-        }}
+        onPress={
+          onClick === undefined ? () => defaultOnClick() : () => onClick!()
+        }
       >
         <View
           style={[

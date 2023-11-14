@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import Item from "./Item";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ArtworkData = {
   _score: number | null;
@@ -17,7 +16,6 @@ type ArtworkData = {
 export default function Explore() {
   const [data, setData] = useState<ArtworkData[]>();
   const [page, setPage] = useState(1);
-  const [favouritesID, setFavouritesID] = useState<number[]>();
 
   useEffect(() => {
     (async () => {
@@ -32,13 +30,6 @@ export default function Explore() {
       } catch (error) {
         console.error(error);
       }
-
-      try {
-        const keys = await AsyncStorage.getAllKeys();
-        setFavouritesID(keys.map((el) => parseInt(el)) as number[]);
-      } catch (error) {
-        console.error(error);
-      }
     })();
   }, [page]);
 
@@ -46,9 +37,7 @@ export default function Explore() {
     <>
       <FlatList
         data={data}
-        renderItem={({ item }) => (
-          <Item data={item} favourites={favouritesID as number[]} />
-        )}
+        renderItem={({ item }) => <Item data={item} />}
         ItemSeparatorComponent={() => <View style={styles.padding} />}
         ListHeaderComponent={() => <View style={styles.padding} />}
         ListFooterComponent={() => <View style={styles.padding} />}

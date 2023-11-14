@@ -1,7 +1,6 @@
 import { View, TextInput, FlatList, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import Item from "./Item";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ArtworkData = {
   _score: number | null;
@@ -18,7 +17,6 @@ export default function Search() {
   const [query, setQuery] = useState<string>();
   const [data, setData] = useState<ArtworkData[]>();
   const [isLoading, setIsLoading] = useState(false);
-  const [favouritesID, setFavouritesID] = useState<number[]>();
 
   useEffect(() => {
     (async () => {
@@ -31,13 +29,6 @@ export default function Search() {
         const json = await res.json();
         setData(json.data);
         setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-
-      try {
-        const keys = await AsyncStorage.getAllKeys();
-        setFavouritesID(keys.map((el) => parseInt(el)) as number[]);
       } catch (error) {
         console.error(error);
       }
@@ -60,9 +51,7 @@ export default function Search() {
       {!isLoading ? (
         <FlatList
           data={data}
-          renderItem={({ item }) => (
-            <Item data={item} favourites={favouritesID as number[]} />
-          )}
+          renderItem={({ item }) => <Item data={item} />}
           ItemSeparatorComponent={() => <View style={styles.padding} />}
           ListHeaderComponent={() => <View style={styles.padding} />}
           ListFooterComponent={() => <View style={styles.padding} />}

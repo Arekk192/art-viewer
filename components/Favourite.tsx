@@ -1,6 +1,8 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import Item from "./Item";
 
 type ArtworkData = {
   _score: number | null;
@@ -16,34 +18,52 @@ type ArtworkData = {
 export default function Favourite() {
   const [favourites, setFavourites] = useState<ArtworkData[]>();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const dataArr = [];
-        const keys = await AsyncStorage.getAllKeys();
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const dataArr = [];
+          const keys = await AsyncStorage.getAllKeys();
 
-        for (let i = 0; i < keys.length; i++) {
-          const id = keys[i];
-          const itemData = await AsyncStorage.getItem(id);
-          dataArr.push({ id: id, ...JSON.parse(itemData as string) });
+          for (let i = 0; i < keys.length; i++) {
+            const id = keys[i];
+            const itemData = await AsyncStorage.getItem(id);
+            dataArr.push({ id: id, ...JSON.parse(itemData as string) });
+          }
+
+          setFavourites(dataArr as unknown as ArtworkData[]);
+        } catch (error) {
+          console.error(error);
         }
-
-        setFavourites(dataArr as unknown as ArtworkData[]);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
+      })();
+    }, [])
+  );
 
   return (
     <>
-      {favourites?.map((el, i) => {
-        return (
-          <View key={i}>
-            <Text>{el.title}</Text>
-          </View>
-        );
-      })}
+      <FlatList
+        data={favourites}
+        renderItem={({ item, index }) => (
+          <Item
+            data={item}
+            onClick={async () => {
+              await AsyncStorage.removeItem(item.id.toString());
+              setFavourites(favourites?.filter((_, i) => i != index));
+            }}
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={styles.padding} />}
+        ListHeaderComponent={() => <View style={styles.padding} />}
+        ListFooterComponent={() => <View style={styles.padding} />}
+        showsVerticalScrollIndicator={false}
+        style={styles.flatlist}
+      />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {},
+  flatlist: { flex: 1, paddingHorizontal: 12 },
+  padding: { height: 8, flex: 1 },
+});
