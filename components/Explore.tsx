@@ -15,23 +15,26 @@ type ArtworkData = {
 
 export default function Explore() {
   const [data, setData] = useState<ArtworkData[]>();
-  const [page, setPage] = useState(1);
+  const fields =
+    "id,title,artist_display,date_display,image_id,dimensions,description";
+  const [paginationURL, setPaginationURL] = useState<string>(
+    `https://api.artic.edu/api/v1/artworks/?page=${1}&fields=${fields}&limit=${15}`
+  );
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(paginationURL);
+      const json = await response.json();
+      setData(data ? data.concat(json["data"]) : json["data"]);
+      setPaginationURL(json["pagination"]["next_url"]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const fields =
-          "id,title,artist_display,date_display,image_id,dimensions,description";
-        const response = await fetch(
-          `https://api.artic.edu/api/v1/artworks/?page=${page}&fields=${fields}&limit=${15}`
-        );
-        const json = await response.json();
-        setData(data ? data.concat(json.data) : json.data);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, [page]);
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -43,7 +46,7 @@ export default function Explore() {
         ListFooterComponent={() => <View style={styles.padding} />}
         showsVerticalScrollIndicator={false}
         style={styles.flatlist}
-        onEndReached={() => setPage(page + 1)}
+        onEndReached={() => fetchData()}
       />
     </>
   );
