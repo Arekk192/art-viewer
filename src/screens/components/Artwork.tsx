@@ -2,13 +2,14 @@ import {
   View,
   Text,
   Image,
-  Dimensions,
   StyleSheet,
   ScrollView,
   TouchableWithoutFeedback,
+  Dimensions,
 } from "react-native";
 import React from "react";
 import colors from "../../static/colors";
+import RenderHtml from "react-native-render-html";
 
 type ArtworkData = {
   _score: number | null;
@@ -48,7 +49,16 @@ export default function Artwork({
         <Text style={styles.title}>{artwork.title}</Text>
         <Text style={styles.date}>{artwork.date_display}</Text>
         <Text style={styles.artist}>by {artwork.artist_display}</Text>
-        <Text style={styles.description}>{artwork.description}</Text>
+        {artwork.description ? (
+          <RenderHtml
+            baseStyle={{ fontSize: 16, color: colors.darkBlack }}
+            contentWidth={Dimensions.get("window").width - 24}
+            source={{ html: artwork.description as string }}
+          />
+        ) : (
+          <></>
+        )}
+        <Text style={styles.dimensions}>{artwork.dimensions}</Text>
       </View>
     </ScrollView>
   );
@@ -66,26 +76,38 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   imageContainer: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.darkBlack,
     borderRadius: 12,
     overflow: "hidden",
     marginTop: 8,
     marginBottom: 20,
   },
   image: {
-    // width: screenWidth - 24,
     flex: 1,
     aspectRatio: 1,
   },
   title: {
     flex: 1,
     fontSize: 32,
+    color: colors.darkBlack,
   },
   date: {
     flex: 1,
     fontSize: 16,
     marginTop: 20,
+    color: colors.darkGray,
   },
-  artist: { flex: 1, fontSize: 16, marginTop: 20 },
-  description: { flex: 1, fontSize: 14, marginVertical: 20 },
+  artist: {
+    flex: 1,
+    fontSize: 16,
+    marginVertical: 20,
+    color: colors.darkBlack,
+  },
+  dimensions: {
+    flex: 1,
+    fontSize: 16,
+    marginVertical: 20,
+    textAlign: "center",
+    color: colors.darkGray,
+  },
 });
