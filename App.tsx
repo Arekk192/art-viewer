@@ -8,6 +8,7 @@ import colors from "./src/static/colors";
 import * as NavigationBar from "expo-navigation-bar";
 import { Platform, StatusBar, StyleSheet } from "react-native";
 import { Svg, Path } from "react-native-svg";
+import Artwork from "./src/screens/components/Artwork";
 
 export default function App() {
   const Tab = createBottomTabNavigator();

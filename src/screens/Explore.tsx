@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import Item from "./components/Item";
 import colors from "../static/colors";
+import Artwork from "./components/Artwork";
 
 type ArtworkData = {
   _score: number | null;
@@ -16,6 +24,7 @@ type ArtworkData = {
 
 export default function Explore() {
   const [data, setData] = useState<ArtworkData[]>();
+  const [artwork, setArtwork] = useState<ArtworkData | null>(null);
   const fields =
     "id,title,artist_display,date_display,image_id,dimensions,description";
   const [paginationURL, setPaginationURL] = useState<string>(
@@ -39,17 +48,23 @@ export default function Explore() {
 
   return (
     <>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <Item data={item} />}
-        ItemSeparatorComponent={() => <View style={styles.padding} />}
-        ListHeaderComponent={() => <View style={styles.padding} />}
-        ListFooterComponent={() => <View style={styles.padding} />}
-        showsVerticalScrollIndicator={false}
-        style={styles.flatlist}
-        onEndReached={() => fetchData()}
-        keyExtractor={(_, index) => index.toString()}
-      />
+      {artwork ? (
+        <Artwork artwork={artwork} onPress={() => setArtwork(null)} />
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={({ item }) => (
+            <Item data={item} onPress={() => setArtwork(item)} />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.padding} />}
+          ListHeaderComponent={() => <View style={styles.padding} />}
+          ListFooterComponent={() => <View style={styles.padding} />}
+          showsVerticalScrollIndicator={false}
+          style={styles.flatlist}
+          onEndReached={() => fetchData()}
+          keyExtractor={(_, index) => index.toString()}
+        />
+      )}
     </>
   );
 }

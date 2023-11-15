@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import Item from "./components/Item";
 import colors from "../static/colors";
+import Artwork from "./components/Artwork";
 
 type ArtworkData = {
   _score: number | null;
@@ -18,6 +19,7 @@ type ArtworkData = {
 
 export default function Favourite() {
   const [favourites, setFavourites] = useState<ArtworkData[]>();
+  const [artwork, setArtwork] = useState<ArtworkData | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -42,24 +44,29 @@ export default function Favourite() {
 
   return (
     <>
-      <FlatList
-        data={favourites}
-        renderItem={({ item, index }) => (
-          <Item
-            data={item}
-            onClick={async () => {
-              await AsyncStorage.removeItem(item.id.toString());
-              setFavourites(favourites?.filter((_, i) => i != index));
-            }}
-          />
-        )}
-        ItemSeparatorComponent={() => <View style={styles.padding} />}
-        ListHeaderComponent={() => <View style={styles.padding} />}
-        ListFooterComponent={() => <View style={styles.padding} />}
-        showsVerticalScrollIndicator={false}
-        style={styles.flatlist}
-        keyExtractor={(_, index) => index.toString()}
-      />
+      {artwork ? (
+        <Artwork artwork={artwork} onPress={() => setArtwork(null)} />
+      ) : (
+        <FlatList
+          data={favourites}
+          renderItem={({ item, index }) => (
+            <Item
+              data={item}
+              onPress={() => setArtwork(item)}
+              buttonOnPress={async () => {
+                await AsyncStorage.removeItem(item.id.toString());
+                setFavourites(favourites?.filter((_, i) => i != index));
+              }}
+            />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.padding} />}
+          ListHeaderComponent={() => <View style={styles.padding} />}
+          ListFooterComponent={() => <View style={styles.padding} />}
+          showsVerticalScrollIndicator={false}
+          style={styles.flatlist}
+          keyExtractor={(_, index) => index.toString()}
+        />
+      )}
     </>
   );
 }
