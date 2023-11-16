@@ -1,3 +1,5 @@
+import React, { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -6,22 +8,9 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Svg, Path } from "react-native-svg";
-import React, { useCallback, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import colors from "../../static/colors";
 import type { ArtworkData } from "../../../App";
-
-// type ArtworkData = {
-//   _score: number | null;
-//   id: number;
-//   title: string;
-//   artist_display: string;
-//   date_display: string;
-//   image_id: string;
-//   dimensions: string;
-//   description: string | null;
-// };
 
 type Data = {
   data: ArtworkData;

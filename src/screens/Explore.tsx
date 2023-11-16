@@ -1,30 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import { View, FlatList, StyleSheet } from "react-native";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import { useNavigation } from "@react-navigation/native";
-import type { CompositeNavigationProp } from "@react-navigation/native";
-import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import type { ArtworkData, RootStackParamList } from "../../App";
-
-type ExploreScreenNavigationParamList = {
-  Explore: undefined;
-  Artwork: { artwork: ArtworkData };
-};
-
-type ExploreHomeScreenNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<ExploreScreenNavigationParamList, "Artwork">,
-  BottomTabNavigationProp<RootStackParamList>
->;
+import type { ArtworkData, ScreenNavigationProps } from "../../App";
 
 export default function Explore() {
+  const navigation = useNavigation<ScreenNavigationProps>();
   const [data, setData] = useState<ArtworkData[]>();
   const fields =
-    "id,title,artist_display,date_display,image_id,dimensions,description";
+    "id,title,artist_display,artist_id,date_display,image_id,dimensions,description";
   const [paginationURL, setPaginationURL] = useState<string>(
     `https://api.artic.edu/api/v1/artworks/?page=${1}&fields=${fields}&limit=${15}`
   );
-  const navigation = useNavigation<ExploreHomeScreenNavigationProp>();
 
   const fetchData = async () => {
     try {

@@ -1,29 +1,14 @@
 import React, { useCallback, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { View, FlatList, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  CompositeNavigationProp,
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import type { ArtworkData, RootStackParamList } from "../../App";
-
-type FavouriteNavigationParamList = {
-  FavouriteHome: undefined;
-  Artwork: { artwork: ArtworkData };
-};
-
-type ProfileScreenNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<FavouriteNavigationParamList, "Artwork">,
-  BottomTabNavigationProp<RootStackParamList>
->;
+import type { ArtworkData, ScreenNavigationProps } from "../../App";
 
 export default function Favourite() {
   const [favourites, setFavourites] = useState<ArtworkData[]>();
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const navigation = useNavigation<ScreenNavigationProps>();
 
   useFocusEffect(
     useCallback(() => {

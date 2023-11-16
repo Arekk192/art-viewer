@@ -9,38 +9,55 @@ import {
   Platform,
   StatusBar,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import colors from "../../static/colors";
 import RenderHtml from "react-native-render-html";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import type { Author, ScreenNavigationParamList } from "../../../App";
 
-type ArtworkData = {
-  _score?: number;
-  id: number;
-  title: string;
-  artist_display: string;
-  date_display: string;
-  image_id: string;
-  dimensions: string;
-  description: string | null;
-};
-
-type RootStackParamList = {
-  Explore: undefined;
-  Artwork: { artwork: ArtworkData };
-};
-
-type Props = BottomTabScreenProps<RootStackParamList, "Artwork">;
+type Props = BottomTabScreenProps<ScreenNavigationParamList, "Artwork">;
 
 export default function Artwork({ navigation, route }: Props) {
+  const [author, setAuthor] = useState<Author>();
   const artwork = route.params.artwork;
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const fields = "id,title,birth_date,death_date,description";
+        const url = `https://api.artic.edu/api/v1/agents/${artwork.artist_id}?fields=${fields}`;
+        const response = await fetch(url);
+        const json = await response.json();
+        setAuthor(json["data"]);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, [artwork]);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>Go back</Text>
-        </TouchableWithoutFeedback>
+        <View style={styles.buttonsContainer}>
+          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+            <Text style={styles.button}>Go back</Text>
+          </TouchableWithoutFeedback>
+          <Text style={styles.button}>s{artwork.artist_id}</Text>
+          {artwork.artist_id ? (
+            <TouchableWithoutFeedback
+              onPress={() =>
+                navigation.navigate("Author", {
+                  author: author as Author,
+                  artwork: artwork,
+                })
+              }
+            >
+              <Text style={styles.button}>Author</Text>
+            </TouchableWithoutFeedback>
+          ) : (
+            <></>
+          )}
+        </View>
 
         <View style={styles.imageContainer}>
           <Image
@@ -54,7 +71,7 @@ export default function Artwork({ navigation, route }: Props) {
 
         <Text style={styles.title}>{artwork.title}</Text>
         <Text style={styles.date}>{artwork.date_display}</Text>
-        <Text style={styles.artist}>by {artwork.artist_display}</Text>
+        <Text style={styles.artist}>{artwork.artist_display}</Text>
         {artwork.description ? (
           <RenderHtml
             baseStyle={{ fontSize: 16, color: colors.darkBlack }}
@@ -75,11 +92,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! : 0,
   },
-  backButton: {
+  buttonsContainer: {
+    paddingTop: 16,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  button: {
     fontSize: 16,
     padding: 8,
-    paddingTop: 16,
-    paddingRight: 12,
     paddingBottom: 8,
     color: colors.blue,
     fontWeight: "bold",

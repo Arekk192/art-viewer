@@ -1,39 +1,62 @@
 import { useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Platform, StatusBar, StyleSheet } from "react-native";
+import {
+  CompositeNavigationProp,
+  NavigationContainer,
+} from "@react-navigation/native";
+import {
+  BottomTabNavigationProp,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
+import { Svg, Path } from "react-native-svg";
+import * as NavigationBar from "expo-navigation-bar";
 import Explore from "./src/screens/Explore";
 import Search from "./src/screens/Search";
 import Favourite from "./src/screens/Favourite";
 import Artwork from "./src/screens/components/Artwork";
 import colors from "./src/static/colors";
-import * as NavigationBar from "expo-navigation-bar";
-import { Platform, StatusBar, StyleSheet } from "react-native";
-import { Svg, Path } from "react-native-svg";
+import Author from "./src/screens/components/Author";
 
 export type ArtworkData = {
   _score?: number;
   id: number;
   title: string;
   artist_display: string;
+  artist_id: number;
   date_display: string;
   image_id: string;
   dimensions: string;
   description: string | null;
 };
 
-export type RootStackParamList = {
-  Explore: undefined;
-  Search: undefined;
-  Favourite: undefined;
+export type Author = {
+  artist_id: number;
+  title: string;
+  birth_date: string | null;
+  death_date: string | null;
+  description: string;
 };
 
-type ScreenNavigationParamList = {
+export type ScreenNavigationParamList = {
   ExploreScreen: undefined;
   SearchScreen: undefined;
   FavouriteScreen: undefined;
-  Artwork: {
+  Artwork: { artwork: ArtworkData };
+  Author: {
     artwork: ArtworkData;
+    author: Author;
   };
+};
+
+export type ScreenNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<ScreenNavigationParamList, "Artwork">,
+  BottomTabNavigationProp<RootStackParamList>
+>;
+
+type RootStackParamList = {
+  Explore: undefined;
+  Search: undefined;
+  Favourite: undefined;
 };
 
 type IconProps = {
@@ -100,6 +123,11 @@ export default function App() {
           component={Artwork}
           options={{ headerShown: false }}
         />
+        <ScreenTab.Screen
+          name="Author"
+          component={Author}
+          options={{ headerShown: false }}
+        />
       </ScreenTab.Navigator>
     );
   };
@@ -123,6 +151,11 @@ export default function App() {
           component={Artwork}
           options={{ headerShown: false }}
         />
+        <ScreenTab.Screen
+          name="Author"
+          component={Author}
+          options={{ headerShown: false }}
+        />
       </ScreenTab.Navigator>
     );
   };
@@ -144,6 +177,11 @@ export default function App() {
         <ScreenTab.Screen
           name="Artwork"
           component={Artwork}
+          options={{ headerShown: false }}
+        />
+        <ScreenTab.Screen
+          name="Author"
+          component={Author}
           options={{ headerShown: false }}
         />
       </ScreenTab.Navigator>

@@ -8,44 +8,14 @@ import {
 import React, { useEffect, useState } from "react";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import {
-  CompositeNavigationProp,
-  useNavigation,
-} from "@react-navigation/native";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-
-type ArtworkData = {
-  _score: number | null;
-  id: number;
-  title: string;
-  artist_display: string;
-  date_display: string;
-  image_id: string;
-  dimensions: string;
-  description: string | null;
-};
-
-type ExploreNavigationParamList = {
-  ExploreHome: undefined;
-  Artwork: { artwork: ArtworkData };
-};
-
-type StackParamList = {
-  Explore: undefined;
-  Search: undefined;
-  Favourite: undefined;
-};
-
-type ExploreHomeScreenNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<ExploreNavigationParamList, "Artwork">,
-  BottomTabNavigationProp<StackParamList>
->;
+import { useNavigation } from "@react-navigation/native";
+import type { ArtworkData, ScreenNavigationProps } from "../../App";
 
 export default function Search() {
-  const [query, setQuery] = useState<string>();
+  const navigation = useNavigation<ScreenNavigationProps>();
   const [data, setData] = useState<ArtworkData[]>();
-  const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigation<ExploreHomeScreenNavigationProp>();
+  const [query, setQuery] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
