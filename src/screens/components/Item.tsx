@@ -10,17 +10,18 @@ import React, { useCallback, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import colors from "../../static/colors";
+import type { ArtworkData } from "../../../App";
 
-type ArtworkData = {
-  _score: number | null;
-  id: number;
-  title: string;
-  artist_display: string;
-  date_display: string;
-  image_id: string;
-  dimensions: string;
-  description: string | null;
-};
+// type ArtworkData = {
+//   _score: number | null;
+//   id: number;
+//   title: string;
+//   artist_display: string;
+//   date_display: string;
+//   image_id: string;
+//   dimensions: string;
+//   description: string | null;
+// };
 
 type Data = {
   data: ArtworkData;
@@ -33,7 +34,6 @@ export default React.memo(function Item({
   buttonOnPress,
   onPress,
 }: Data) {
-  const navigaion = useNavigation();
   const [isFavourite, setIsFavourite] = useState(false);
 
   useFocusEffect(

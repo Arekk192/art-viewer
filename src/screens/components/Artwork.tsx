@@ -6,13 +6,16 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Dimensions,
+  Platform,
+  StatusBar,
 } from "react-native";
 import React from "react";
 import colors from "../../static/colors";
 import RenderHtml from "react-native-render-html";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 type ArtworkData = {
-  _score: number | null;
+  _score?: number;
   id: number;
   title: string;
   artist_display: string;
@@ -22,24 +25,27 @@ type ArtworkData = {
   description: string | null;
 };
 
-export default function Artwork({
-  artwork,
-  onPress,
-}: {
-  artwork: ArtworkData;
-  onPress: () => void;
-}) {
+type RootStackParamList = {
+  Explore: undefined;
+  Artwork: { artwork: ArtworkData };
+};
+
+type Props = BottomTabScreenProps<RootStackParamList, "Artwork">;
+
+export default function Artwork({ navigation, route }: Props) {
+  const artwork = route.params.artwork;
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => onPress()}>
+        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
           <Text style={styles.backButton}>Go back</Text>
         </TouchableWithoutFeedback>
 
         <View style={styles.imageContainer}>
           <Image
             source={{
-              uri: `https://www.artic.edu/iiif/2/${artwork.image_id}/full/600,/0/default.jpg`,
+              uri: `https://www.artic.edu/iiif/2/${route.params.artwork.image_id}/full/600,/0/default.jpg`,
             }}
             style={styles.image}
             resizeMode="contain"
@@ -65,11 +71,14 @@ export default function Artwork({
 }
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 12 },
+  container: {
+    paddingHorizontal: 12,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! : 0,
+  },
   backButton: {
     fontSize: 16,
     padding: 8,
-    paddingTop: 12,
+    paddingTop: 16,
     paddingRight: 12,
     paddingBottom: 8,
     color: colors.blue,

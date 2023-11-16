@@ -8,7 +8,11 @@ import {
 import React, { useEffect, useState } from "react";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import Artwork from "./components/Artwork";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 type ArtworkData = {
   _score: number | null;
@@ -21,11 +25,27 @@ type ArtworkData = {
   description: string | null;
 };
 
+type ExploreNavigationParamList = {
+  ExploreHome: undefined;
+  Artwork: { artwork: ArtworkData };
+};
+
+type StackParamList = {
+  Explore: undefined;
+  Search: undefined;
+  Favourite: undefined;
+};
+
+type ExploreHomeScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<ExploreNavigationParamList, "Artwork">,
+  BottomTabNavigationProp<StackParamList>
+>;
+
 export default function Search() {
   const [query, setQuery] = useState<string>();
   const [data, setData] = useState<ArtworkData[]>();
-  const [artwork, setArtwork] = useState<ArtworkData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation<ExploreHomeScreenNavigationProp>();
 
   useEffect(() => {
     (async () => {
@@ -46,39 +66,40 @@ export default function Search() {
 
   return (
     <>
-      {artwork ? (
-        <Artwork artwork={artwork} onPress={() => setArtwork(null)} />
-      ) : (
-        <View style={styles.container}>
-          <View style={styles.textInputContainer}>
-            <TextInput
-              value={query}
-              onChange={(e) => {
-                // e.preventDefault();
-                setIsLoading(true);
-                setQuery(e.nativeEvent.text);
-              }}
-              style={styles.textInput}
-            />
-          </View>
-          {!isLoading ? (
-            <FlatList
-              data={data}
-              renderItem={({ item }) => (
-                <Item data={item} onPress={() => setArtwork(item)} />
-              )}
-              ItemSeparatorComponent={() => <View style={styles.padding} />}
-              ListHeaderComponent={() => <View style={styles.padding} />}
-              ListFooterComponent={() => <View style={styles.padding} />}
-              showsVerticalScrollIndicator={false}
-              style={styles.flatlist}
-              keyExtractor={(_, index) => index.toString()}
-            />
-          ) : (
-            <></>
-          )}
+      <View style={styles.container}>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            value={query}
+            onChange={(e) => {
+              // e.preventDefault();
+              setIsLoading(true);
+              setQuery(e.nativeEvent.text);
+            }}
+            style={styles.textInput}
+          />
         </View>
-      )}
+        {!isLoading ? (
+          <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              <Item
+                data={item}
+                onPress={() =>
+                  navigation.navigate("Artwork", { artwork: item })
+                }
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={styles.padding} />}
+            ListHeaderComponent={() => <View style={styles.padding} />}
+            ListFooterComponent={() => <View style={styles.padding} />}
+            showsVerticalScrollIndicator={false}
+            style={styles.flatlist}
+            keyExtractor={(_, index) => index.toString()}
+          />
+        ) : (
+          <></>
+        )}
+      </View>
     </>
   );
 }

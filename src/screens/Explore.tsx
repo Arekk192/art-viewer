@@ -1,35 +1,30 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import Artwork from "./components/Artwork";
+import { useNavigation } from "@react-navigation/native";
+import type { CompositeNavigationProp } from "@react-navigation/native";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import type { ArtworkData, RootStackParamList } from "../../App";
 
-type ArtworkData = {
-  _score: number | null;
-  id: number;
-  title: string;
-  artist_display: string;
-  date_display: string;
-  image_id: string;
-  dimensions: string;
-  description: string | null;
+type ExploreScreenNavigationParamList = {
+  Explore: undefined;
+  Artwork: { artwork: ArtworkData };
 };
+
+type ExploreHomeScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<ExploreScreenNavigationParamList, "Artwork">,
+  BottomTabNavigationProp<RootStackParamList>
+>;
 
 export default function Explore() {
   const [data, setData] = useState<ArtworkData[]>();
-  const [artwork, setArtwork] = useState<ArtworkData | null>(null);
   const fields =
     "id,title,artist_display,date_display,image_id,dimensions,description";
   const [paginationURL, setPaginationURL] = useState<string>(
     `https://api.artic.edu/api/v1/artworks/?page=${1}&fields=${fields}&limit=${15}`
   );
+  const navigation = useNavigation<ExploreHomeScreenNavigationProp>();
 
   const fetchData = async () => {
     try {
@@ -48,23 +43,22 @@ export default function Explore() {
 
   return (
     <>
-      {artwork ? (
-        <Artwork artwork={artwork} onPress={() => setArtwork(null)} />
-      ) : (
-        <FlatList
-          data={data}
-          renderItem={({ item }) => (
-            <Item data={item} onPress={() => setArtwork(item)} />
-          )}
-          ItemSeparatorComponent={() => <View style={styles.padding} />}
-          ListHeaderComponent={() => <View style={styles.padding} />}
-          ListFooterComponent={() => <View style={styles.padding} />}
-          showsVerticalScrollIndicator={false}
-          style={styles.flatlist}
-          onEndReached={() => fetchData()}
-          keyExtractor={(_, index) => index.toString()}
-        />
-      )}
+      <FlatList
+        data={data}
+        renderItem={({ item }) => (
+          <Item
+            data={item}
+            onPress={() => navigation.navigate("Artwork", { artwork: item })}
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={styles.padding} />}
+        ListHeaderComponent={() => <View style={styles.padding} />}
+        ListFooterComponent={() => <View style={styles.padding} />}
+        showsVerticalScrollIndicator={false}
+        style={styles.flatlist}
+        onEndReached={() => fetchData()}
+        keyExtractor={(_, index) => index.toString()}
+      />
     </>
   );
 }

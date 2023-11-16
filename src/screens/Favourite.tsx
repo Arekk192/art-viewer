@@ -1,25 +1,29 @@
+import React, { useCallback, useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import Artwork from "./components/Artwork";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import type { ArtworkData, RootStackParamList } from "../../App";
 
-type ArtworkData = {
-  _score: number | null;
-  id: number;
-  title: string;
-  artist_display: string;
-  date_display: string;
-  image_id: string;
-  dimensions: string;
-  description: string | null;
+type FavouriteNavigationParamList = {
+  FavouriteHome: undefined;
+  Artwork: { artwork: ArtworkData };
 };
+
+type ProfileScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<FavouriteNavigationParamList, "Artwork">,
+  BottomTabNavigationProp<RootStackParamList>
+>;
 
 export default function Favourite() {
   const [favourites, setFavourites] = useState<ArtworkData[]>();
-  const [artwork, setArtwork] = useState<ArtworkData | null>(null);
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
 
   useFocusEffect(
     useCallback(() => {
@@ -44,29 +48,25 @@ export default function Favourite() {
 
   return (
     <>
-      {artwork ? (
-        <Artwork artwork={artwork} onPress={() => setArtwork(null)} />
-      ) : (
-        <FlatList
-          data={favourites}
-          renderItem={({ item, index }) => (
-            <Item
-              data={item}
-              onPress={() => setArtwork(item)}
-              buttonOnPress={async () => {
-                await AsyncStorage.removeItem(item.id.toString());
-                setFavourites(favourites?.filter((_, i) => i != index));
-              }}
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={styles.padding} />}
-          ListHeaderComponent={() => <View style={styles.padding} />}
-          ListFooterComponent={() => <View style={styles.padding} />}
-          showsVerticalScrollIndicator={false}
-          style={styles.flatlist}
-          keyExtractor={(_, index) => index.toString()}
-        />
-      )}
+      <FlatList
+        data={favourites}
+        renderItem={({ item, index }) => (
+          <Item
+            data={item}
+            onPress={() => navigation.navigate("Artwork", { artwork: item })}
+            buttonOnPress={async () => {
+              await AsyncStorage.removeItem(item.id.toString());
+              setFavourites(favourites?.filter((_, i) => i != index));
+            }}
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={styles.padding} />}
+        ListHeaderComponent={() => <View style={styles.padding} />}
+        ListFooterComponent={() => <View style={styles.padding} />}
+        showsVerticalScrollIndicator={false}
+        style={styles.flatlist}
+        keyExtractor={(_, index) => index.toString()}
+      />
     </>
   );
 }
