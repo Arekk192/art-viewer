@@ -18,7 +18,6 @@ import colors from "./src/static/colors";
 import Author from "./src/screens/components/Author";
 
 export type ArtworkData = {
-  _score?: number;
   id: number;
   title: string;
   artist_display: string;
@@ -35,6 +34,7 @@ export type Author = {
   birth_date: string | null;
   death_date: string | null;
   description: string;
+  is_artist: boolean;
 };
 
 export type ScreenNavigationParamList = {

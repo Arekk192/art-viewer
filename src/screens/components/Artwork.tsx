@@ -22,9 +22,11 @@ export default function Artwork({ navigation, route }: Props) {
   const artwork = route.params.artwork;
 
   useEffect(() => {
+    console.log(artwork.artist_display, artwork.id);
+
     (async () => {
       try {
-        const fields = "id,title,birth_date,death_date,description";
+        const fields = "id,title,birth_date,death_date,description,is_artist";
         const url = `https://api.artic.edu/api/v1/agents/${artwork.artist_id}?fields=${fields}`;
         const response = await fetch(url);
         const json = await response.json();
@@ -42,8 +44,7 @@ export default function Artwork({ navigation, route }: Props) {
           <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
             <Text style={styles.button}>Go back</Text>
           </TouchableWithoutFeedback>
-          <Text style={styles.button}>s{artwork.artist_id}</Text>
-          {artwork.artist_id ? (
+          {author?.is_artist ? (
             <TouchableWithoutFeedback
               onPress={() =>
                 navigation.navigate("Author", {
