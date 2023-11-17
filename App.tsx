@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Platform, StatusBar, StyleSheet } from "react-native";
+import { useCallback, useEffect } from "react";
+import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
 import {
   CompositeNavigationProp,
   NavigationContainer,
@@ -9,6 +9,8 @@ import {
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 import { Svg, Path } from "react-native-svg";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import * as NavigationBar from "expo-navigation-bar";
 import Explore from "./src/screens/Explore";
 import Search from "./src/screens/Search";
@@ -64,15 +66,17 @@ type IconProps = {
   focused: boolean;
 };
 
-export default function App() {
-  const Tab = createBottomTabNavigator<RootStackParamList>();
-  const ScreenTab = createBottomTabNavigator<ScreenNavigationParamList>();
+SplashScreen.preventAutoHideAsync();
 
+export default function App() {
   useEffect(() => {
     (async () => {
       await NavigationBar.setBackgroundColorAsync(colors.black);
     })();
   }, []);
+
+  const Tab = createBottomTabNavigator<RootStackParamList>();
+  const ScreenTab = createBottomTabNavigator<ScreenNavigationParamList>();
 
   const Icon = ({ screen, focused }: IconProps) => {
     if (screen == "Explore")
@@ -188,50 +192,68 @@ export default function App() {
     );
   };
 
+  const [fontsLoaded, fontError] = useFonts({
+    Sabon: require("./assets/fonts/Sabon.ttf"),
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) await SplashScreen.hideAsync();
+  }, [fontsLoaded, fontError]);
+  if (!fontsLoaded && !fontError) return null;
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen
-          name="Explore"
-          component={ExploreScreen}
-          options={{
-            headerShown: false,
-            tabBarStyle: styles.tabBar,
-            tabBarIcon: ({ focused }) => (
-              <Icon screen="Explore" focused={focused} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Search"
-          component={SearchScreen}
-          options={{
-            headerShown: false,
-            tabBarStyle: styles.tabBar,
-            tabBarIcon: ({ focused }) => (
-              <Icon screen="Search" focused={focused} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Favourite"
-          component={FavouriteScreen}
-          options={{
-            headerShown: false,
-            tabBarStyle: styles.tabBar,
-            tabBarIcon: ({ focused }) => (
-              <Icon screen="Favourite" focused={focused} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <>
+      <View onLayout={onLayoutRootView} />
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen
+            name="Explore"
+            component={ExploreScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: styles.tabBar,
+              tabBarIcon: ({ focused }) => (
+                <Icon screen="Explore" focused={focused} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Search"
+            component={SearchScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: styles.tabBar,
+              tabBarIcon: ({ focused }) => (
+                <Icon screen="Search" focused={focused} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Favourite"
+            component={FavouriteScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: styles.tabBar,
+              tabBarIcon: ({ focused }) => (
+                <Icon screen="Favourite" focused={focused} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   icon: { width: 24, height: 24 },
-  tabBar: { backgroundColor: colors.black, height: 56, paddingTop: 6 },
+  tabBar: {
+    backgroundColor: colors.black,
+    height: 56,
+    paddingTop: 6,
+  },
   header: {
     height: Platform.OS === "android" ? StatusBar.currentHeight! + 84 : 84,
     backgroundColor: colors.black,

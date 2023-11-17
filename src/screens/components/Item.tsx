@@ -112,10 +112,12 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   artworkTitle: {
+    fontFamily: "Roboto-Regular",
     fontSize: 14,
     color: colors.white,
   },
   artworkArtist: {
+    fontFamily: "Roboto-Regular",
     fontSize: 10,
   },
   addToFavouritesButton: { width: 28, height: 28 },

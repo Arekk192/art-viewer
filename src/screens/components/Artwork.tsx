@@ -75,7 +75,11 @@ export default function Artwork({ navigation, route }: Props) {
         <Text style={styles.artist}>{artwork.artist_display}</Text>
         {artwork.description ? (
           <RenderHtml
-            baseStyle={{ fontSize: 16, color: colors.darkBlack }}
+            baseStyle={{
+              fontSize: 16,
+              color: colors.darkBlack,
+              fontFamily: "Roboto-Regular",
+            }}
             contentWidth={Dimensions.get("window").width - 24}
             source={{ html: artwork.description as string }}
           />
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     color: colors.blue,
     fontWeight: "bold",
+    fontFamily: "Roboto-Bold",
   },
   imageContainer: {
     backgroundColor: colors.darkBlack,
@@ -120,23 +125,28 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
+    marginTop: 4,
     fontSize: 32,
+    fontFamily: "Sabon",
     color: colors.darkBlack,
   },
   date: {
     flex: 1,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     marginTop: 20,
     color: colors.darkGray,
   },
   artist: {
     flex: 1,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     marginVertical: 20,
     color: colors.darkBlack,
   },
   dimensions: {
     flex: 1,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     marginVertical: 20,
     textAlign: "center",
