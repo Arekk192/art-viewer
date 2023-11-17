@@ -28,6 +28,8 @@ export type ArtworkData = {
   image_id: string;
   dimensions: string;
   description: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type Author = {

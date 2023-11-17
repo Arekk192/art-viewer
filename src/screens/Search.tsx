@@ -21,7 +21,7 @@ export default function Search() {
     (async () => {
       try {
         const fields =
-          "id,title,artist_display,artist_id,date_display,image_id,dimensions,description";
+          "id,title,artist_display,artist_id,date_display,image_id,dimensions,description,latitude,longitude";
         const res = await fetch(
           `https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=${fields}`
         );

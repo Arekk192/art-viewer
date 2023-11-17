@@ -9,7 +9,7 @@ export default function Explore() {
   const navigation = useNavigation<ScreenNavigationProps>();
   const [data, setData] = useState<ArtworkData[]>();
   const fields =
-    "id,title,artist_display,artist_id,date_display,image_id,dimensions,description";
+    "id,title,artist_display,artist_id,date_display,image_id,dimensions,description,latitude,longitude";
   const [paginationURL, setPaginationURL] = useState<string>(
     `https://api.artic.edu/api/v1/artworks/?page=${1}&fields=${fields}&limit=${15}`
   );

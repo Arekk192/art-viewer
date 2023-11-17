@@ -15,6 +15,7 @@ import RenderHtml from "react-native-render-html";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { Author, ScreenNavigationParamList } from "../../../App";
 import { Defs, LinearGradient, Rect, Stop, Svg } from "react-native-svg";
+import MapView, { Marker } from "react-native-maps";
 
 type Props = BottomTabScreenProps<ScreenNavigationParamList, "Artwork">;
 
@@ -95,6 +96,36 @@ export default function Artwork({ navigation, route }: Props) {
           <></>
         )}
         <Text style={styles.dimensions}>{artwork.dimensions}</Text>
+
+        {artwork.latitude && artwork.longitude ? (
+          <>
+            <Text style={styles.mapText}>Located in</Text>
+            <View style={styles.mapContainer}>
+              <MapView
+                initialRegion={{
+                  latitude: artwork.latitude,
+                  longitude: artwork.longitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                zoomEnabled={false}
+                pitchEnabled={false}
+                rotateEnabled={false}
+                scrollEnabled={false}
+                style={styles.map}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: artwork.latitude!,
+                    longitude: artwork.longitude!,
+                  }}
+                />
+              </MapView>
+            </View>
+          </>
+        ) : (
+          <></>
+        )}
       </ScrollView>
       <Svg width={screenWidth} height={32} style={styles.gradientBottom}>
         <Defs>
@@ -178,9 +209,31 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Roboto-Regular",
     fontSize: 16,
-    marginTop: 20,
-    marginBottom: 32,
+    marginTop: 12,
+    marginBottom: 24,
     textAlign: "center",
     color: colors.darkGray,
+  },
+  mapContainer: {
+    width: screenWidth - 24,
+    height: screenWidth - 24,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  mapText: {
+    width: screenWidth - 24,
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    color: colors.darkBlack,
+    marginBottom: 8,
+  },
+  map: {
+    width: screenWidth - 24,
+    aspectRatio: 1,
+    marginBottom: 32,
+    borderRadius: 8,
+    overflow: "hidden",
   },
 });
