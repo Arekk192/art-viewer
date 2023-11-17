@@ -14,6 +14,7 @@ import colors from "../../static/colors";
 import RenderHtml from "react-native-render-html";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { Author, ScreenNavigationParamList } from "../../../App";
+import { Defs, LinearGradient, Rect, Stop, Svg } from "react-native-svg";
 
 type Props = BottomTabScreenProps<ScreenNavigationParamList, "Artwork">;
 
@@ -22,8 +23,6 @@ export default function Artwork({ navigation, route }: Props) {
   const artwork = route.params.artwork;
 
   useEffect(() => {
-    console.log(artwork.artist_display, artwork.id);
-
     (async () => {
       try {
         const fields = "id,title,birth_date,death_date,description,is_artist";
@@ -38,8 +37,17 @@ export default function Artwork({ navigation, route }: Props) {
   }, [artwork]);
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <Svg width={screenWidth} height={20} style={styles.gradientTop}>
+        <Defs>
+          <LinearGradient id="rect" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.white} stopOpacity="1" />
+            <Stop offset="1" stopColor={colors.white} stopOpacity="0" />
+          </LinearGradient>
+        </Defs>
+        <Rect x={0} y={0} width={screenWidth} height="20" fill="url(#rect)" />
+      </Svg>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.buttonsContainer}>
           <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
             <Text style={styles.button}>Go back</Text>
@@ -87,15 +95,35 @@ export default function Artwork({ navigation, route }: Props) {
           <></>
         )}
         <Text style={styles.dimensions}>{artwork.dimensions}</Text>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <Svg width={screenWidth} height={32} style={styles.gradientBottom}>
+        <Defs>
+          <LinearGradient id="rect" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.white} stopOpacity="0" />
+            <Stop offset="1" stopColor={colors.white} stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect x={0} y={0} width={screenWidth} height="32" fill="url(#rect)" />
+      </Svg>
+    </View>
   );
 }
 
+const screenWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 12,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! : 0,
+  },
+  gradientTop: {
+    position: "absolute",
+    zIndex: 1,
+    top: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  gradientBottom: {
+    position: "absolute",
+    zIndex: 1,
+    bottom: 0,
   },
   buttonsContainer: {
     paddingTop: 16,
@@ -148,7 +176,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Roboto-Regular",
     fontSize: 16,
-    marginVertical: 20,
+    marginTop: 20,
+    marginBottom: 32,
     textAlign: "center",
     color: colors.darkGray,
   },
