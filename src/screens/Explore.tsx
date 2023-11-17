@@ -8,12 +8,16 @@ import type { ArtworkData, ScreenNavigationProps } from "../../App";
 export default function Explore() {
   const navigation = useNavigation<ScreenNavigationProps>();
   const [data, setData] = useState<ArtworkData[]>();
+
+  // fields used in fetch for response optimization (fetching only required data)
   const fields =
     "id,title,artist_display,artist_id,date_display,image_id,dimensions,description,latitude,longitude";
+
   const [paginationURL, setPaginationURL] = useState<string>(
     `https://api.artic.edu/api/v1/artworks/?page=${1}&fields=${fields}&limit=${15}`
   );
 
+  // function which add next 15 artworks to state
   const fetchData = async () => {
     try {
       const response = await fetch(paginationURL);

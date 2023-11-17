@@ -12,6 +12,7 @@ export default function Favourite() {
 
   useFocusEffect(
     useCallback(() => {
+      // getting data from async storage
       (async () => {
         try {
           const dataArr = [];

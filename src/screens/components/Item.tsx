@@ -27,6 +27,7 @@ export default React.memo(function Item({
 
   useFocusEffect(
     useCallback(() => {
+      // getting data from async storage to check if artwork is in favourites
       (async () => {
         try {
           let _isFavourite = false;
@@ -42,6 +43,8 @@ export default React.memo(function Item({
     }, [])
   );
 
+  // add to favourites button function, for Explore and Search screens
+  // for Favourite screen button onPress is different
   const defaultButtonOnPress = async () => {
     const { id, ...object } = data;
     !isFavourite
@@ -64,14 +67,18 @@ export default React.memo(function Item({
         </View>
         <View style={styles.artworkDataContainer}>
           <Text style={styles.artworkTitle}>
+            {/* for titles longer than 47 characters */}
             {data.title.length >= 47
               ? `${data.title.slice(0, 47)}...`
               : data.title}
           </Text>
           <Text style={styles.artworkArtist}>
+            {/* artist's name */}
             {data.artist_display?.split("\n")[0]}
           </Text>
         </View>
+
+        {/* add to favourites button */}
         <TouchableWithoutFeedback
           onPress={
             buttonOnPress === undefined

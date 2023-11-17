@@ -37,6 +37,7 @@ export default function Search() {
   return (
     <>
       <View style={styles.container}>
+        {/* text input for user interaction */}
         <View style={styles.textInputContainer}>
           <TextInput
             value={query}
@@ -47,6 +48,8 @@ export default function Search() {
             style={styles.textInput}
           />
         </View>
+
+        {/* flatlist with data */}
         {!isLoading ? (
           <FlatList
             data={data}
@@ -66,6 +69,7 @@ export default function Search() {
             keyExtractor={(_, index) => index.toString()}
           />
         ) : (
+          // component simulating artworks while data is loading
           <>
             {Array(7)
               .fill("")

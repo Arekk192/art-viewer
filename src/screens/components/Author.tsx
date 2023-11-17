@@ -38,6 +38,7 @@ export default function Author({ navigation, route }: Props) {
 
   useFocusEffect(
     useCallback(() => {
+      // query for getting few (max 32) author artworks
       (async () => {
         try {
           const fields = "id,title,artist_id,image_id";
@@ -63,6 +64,7 @@ export default function Author({ navigation, route }: Props) {
 
   return (
     <View style={styles.container}>
+      {/* author's artwork preview */}
       {currentArtwork ? (
         <TouchableWithoutFeedback onPress={() => setCurrentArtwork(null)}>
           <View style={styles.currentArtworkContainer}>
@@ -85,6 +87,7 @@ export default function Author({ navigation, route }: Props) {
         <></>
       )}
 
+      {/* author data */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.buttonsContainer}>
           <TouchableWithoutFeedback
@@ -94,7 +97,6 @@ export default function Author({ navigation, route }: Props) {
           </TouchableWithoutFeedback>
         </View>
 
-        {/* <Text>{author.id}</Text> */}
         <Text style={styles.authorName}>
           {author.title ? author.title : ""}
         </Text>
@@ -119,6 +121,7 @@ export default function Author({ navigation, route }: Props) {
           <></>
         )}
 
+        {/* author artworks */}
         <Text style={styles.artworksText}>Most popular artworks:</Text>
         {authorArtworks?.map((el, i) => {
           return (
@@ -164,6 +167,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! : 0,
   },
+  //#region buttons
   buttonsContainer: {
     paddingTop: 16,
     flex: 1,
@@ -178,6 +182,9 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontWeight: "bold",
   },
+  //#endregion
+
+  //#region author data styles
   authorName: {
     marginTop: 20,
     fontFamily: "Roboto-Regular",
@@ -219,6 +226,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.darkBlack,
   },
+  //#endregion
+
+  //#region styles for artwork preview
   currentArtworkContainer: {
     position: "absolute",
     zIndex: 1,
@@ -256,4 +266,5 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: colors.white,
   },
+  //#endregion
 });

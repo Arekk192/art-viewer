@@ -19,6 +19,7 @@ import Artwork from "./src/screens/components/Artwork";
 import colors from "./src/static/colors";
 import Author from "./src/screens/components/Author";
 
+//#region types
 export type ArtworkData = {
   id: number;
   title: string;
@@ -67,6 +68,7 @@ type IconProps = {
   screen: "Explore" | "Search" | "Favourite";
   focused: boolean;
 };
+//#endregion
 
 SplashScreen.preventAutoHideAsync();
 
@@ -80,6 +82,7 @@ export default function App() {
   const Tab = createBottomTabNavigator<RootStackParamList>();
   const ScreenTab = createBottomTabNavigator<ScreenNavigationParamList>();
 
+  // bottom navigation icons
   const Icon = ({ screen, focused }: IconProps) => {
     if (screen == "Explore")
       return (
@@ -110,6 +113,7 @@ export default function App() {
       );
   };
 
+  // #region bottom navigation screens
   const ExploreScreen = () => {
     return (
       <ScreenTab.Navigator tabBar={() => <></>}>
@@ -193,7 +197,9 @@ export default function App() {
       </ScreenTab.Navigator>
     );
   };
+  //#endregion
 
+  // using custom fonts
   const [fontsLoaded, fontError] = useFonts({
     Sabon: require("./assets/fonts/Sabon.ttf"),
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),

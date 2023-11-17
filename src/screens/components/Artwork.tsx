@@ -24,6 +24,8 @@ export default function Artwork({ navigation, route }: Props) {
   const artwork = route.params.artwork;
 
   useEffect(() => {
+    // fetch for author component (executing in artwork component for
+    // saving user time so he doesn't have to wait later in author screen)
     (async () => {
       try {
         const fields = "id,title,birth_date,death_date,description,is_artist";
@@ -39,6 +41,7 @@ export default function Artwork({ navigation, route }: Props) {
 
   return (
     <View style={styles.container}>
+      {/* top gradient */}
       <Svg width={screenWidth} height={20} style={styles.gradientTop}>
         <Defs>
           <LinearGradient id="rect" x1="0" y1="0" x2="0" y2="1">
@@ -48,7 +51,9 @@ export default function Artwork({ navigation, route }: Props) {
         </Defs>
         <Rect x={0} y={0} width={screenWidth} height="20" fill="url(#rect)" />
       </Svg>
+
       <ScrollView showsVerticalScrollIndicator={false}>
+        {/* buttons */}
         <View style={styles.buttonsContainer}>
           <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
             <Text style={styles.button}>Go back</Text>
@@ -69,6 +74,7 @@ export default function Artwork({ navigation, route }: Props) {
           )}
         </View>
 
+        {/* artwork data */}
         <View style={styles.imageContainer}>
           <Image
             source={{
@@ -78,7 +84,6 @@ export default function Artwork({ navigation, route }: Props) {
             resizeMode="contain"
           />
         </View>
-
         <Text style={styles.title}>{artwork.title}</Text>
         <Text style={styles.date}>{artwork.date_display}</Text>
         <Text style={styles.artist}>{artwork.artist_display}</Text>
@@ -97,6 +102,7 @@ export default function Artwork({ navigation, route }: Props) {
         )}
         <Text style={styles.dimensions}>{artwork.dimensions}</Text>
 
+        {/* map component */}
         {artwork.latitude && artwork.longitude ? (
           <>
             <Text style={styles.mapText}>Located in</Text>
@@ -127,6 +133,8 @@ export default function Artwork({ navigation, route }: Props) {
           <></>
         )}
       </ScrollView>
+
+      {/* bottom gradient */}
       <Svg width={screenWidth} height={32} style={styles.gradientBottom}>
         <Defs>
           <LinearGradient id="rect" x1="0" y1="0" x2="0" y2="1">
@@ -146,6 +154,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! : 0,
   },
+
+  //#region gradients
   gradientTop: {
     position: "absolute",
     zIndex: 1,
@@ -156,6 +166,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
     bottom: 0,
   },
+  //#endregion
+
+  //#region buttons
   buttonsContainer: {
     paddingTop: 16,
     flex: 1,
@@ -171,6 +184,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontFamily: "Roboto-Bold",
   },
+  //#endregion
+
+  //#region artwork
   imageContainer: {
     backgroundColor: colors.darkBlack,
     borderRadius: 12,
@@ -214,6 +230,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.darkGray,
   },
+  //#endregion
+
+  //#region map
   mapContainer: {
     width: screenWidth - 24,
     height: screenWidth - 24,
@@ -236,4 +255,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: "hidden",
   },
+  //#endregion
 });
