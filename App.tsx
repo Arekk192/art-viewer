@@ -31,7 +31,7 @@ export type ArtworkData = {
 };
 
 export type Author = {
-  artist_id: number;
+  id: number;
   title: string;
   birth_date: string | null;
   death_date: string | null;

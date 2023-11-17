@@ -63,7 +63,11 @@ export default React.memo(function Item({
           />
         </View>
         <View style={styles.artworkDataContainer}>
-          <Text style={styles.artworkTitle}>{data.title}</Text>
+          <Text style={styles.artworkTitle}>
+            {data.title.length >= 47
+              ? `${data.title.slice(0, 47)}...`
+              : data.title}
+          </Text>
           <Text style={styles.artworkArtist}>
             {data.artist_display?.split("\n")[0]}
           </Text>

@@ -31,9 +31,10 @@ type Artwork = {
 };
 
 export default function Author({ navigation, route }: Props) {
+  const [authorArtworks, setAuthorArtworks] = useState<AuthorArtwork[]>();
+  const [currentArtwork, setCurrentArtwork] = useState<Artwork | null>(null);
   const artwork = route.params.artwork;
   const author = route.params.author;
-  const [authorArtworks, setAuthorArtworks] = useState<AuthorArtwork[]>();
 
   useFocusEffect(
     useCallback(() => {
@@ -62,6 +63,28 @@ export default function Author({ navigation, route }: Props) {
 
   return (
     <View style={styles.container}>
+      {currentArtwork ? (
+        <TouchableWithoutFeedback onPress={() => setCurrentArtwork(null)}>
+          <View style={styles.currentArtworkContainer}>
+            <View style={styles.currentArtworkBackground} />
+            <View style={styles.currentArtworkImageContainer}>
+              <Image
+                source={{
+                  uri: `https://www.artic.edu/iiif/2/${currentArtwork.image_id}/full/600,/0/default.jpg`,
+                }}
+                style={styles.currentArtworkImage}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.currentArtworkTitle}>
+              {currentArtwork.title}
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+      ) : (
+        <></>
+      )}
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.buttonsContainer}>
           <TouchableWithoutFeedback
@@ -71,7 +94,7 @@ export default function Author({ navigation, route }: Props) {
           </TouchableWithoutFeedback>
         </View>
 
-        <Text style={{ marginTop: 6 }}>{author.artist_id}</Text>
+        {/* <Text>{author.id}</Text> */}
         <Text style={styles.authorName}>
           {author.title ? author.title : ""}
         </Text>
@@ -96,19 +119,35 @@ export default function Author({ navigation, route }: Props) {
           <></>
         )}
 
-        <Text>Most popular artworks:</Text>
+        <Text style={styles.artworksText}>Most popular artworks:</Text>
         {authorArtworks?.map((el, i) => {
           return (
-            <View key={i} style={styles.artworkContainer}>
-              <Image
-                source={{
-                  uri: `https://www.artic.edu/iiif/2/${el.image_id}/full/600,/0/default.jpg`,
-                }}
-                style={styles.artworkImage}
-                resizeMode="contain"
-              />
-              <Text style={{ flex: 1 }}>{el.title}</Text>
-            </View>
+            <TouchableWithoutFeedback
+              key={i}
+              onLongPress={() =>
+                setCurrentArtwork({
+                  image_id: el.image_id,
+                  title: el.title,
+                })
+              }
+            >
+              <View style={styles.artworkContainer}>
+                <View style={styles.artworkImageContainer}>
+                  <Image
+                    source={{
+                      uri: `https://www.artic.edu/iiif/2/${el.image_id}/full/600,/0/default.jpg`,
+                    }}
+                    style={styles.artworkImage}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text style={styles.artworkImageTitle}>
+                  {el.title.length >= 62
+                    ? `${el.title.slice(0, 62)}...`
+                    : el.title}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
           );
         })}
       </ScrollView>
@@ -116,6 +155,10 @@ export default function Author({ navigation, route }: Props) {
   );
 }
 
+const screenSize = {
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+};
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 12,
@@ -135,18 +178,82 @@ const styles = StyleSheet.create({
     color: colors.blue,
     fontWeight: "bold",
   },
-  authorName: { marginVertical: 6 },
+  authorName: {
+    marginTop: 20,
+    fontFamily: "Roboto-Regular",
+    fontSize: 32,
+    color: colors.darkBlack,
+  },
+  authorLife: {
+    marginVertical: 12,
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    color: colors.darkGray,
+  },
+  artworksText: {
+    marginTop: 12,
+    marginBottom: 8,
+    fontFamily: "Roboto-Regular",
+    fontSize: 14,
+  },
   artworkContainer: {
     flexDirection: "row",
     gap: 8,
     alignItems: "center",
     marginVertical: 4,
     borderRadius: 8,
-    paddingVertical: 4,
-    paddingLeft: 8,
+    paddingVertical: 6,
+    paddingLeft: 6,
     paddingRight: 4,
-    backgroundColor: colors.gray,
+    backgroundColor: colors.lightGray,
+  },
+  artworkImageContainer: {
+    backgroundColor: colors.darkGray,
+    borderRadius: 6,
+    elevation: 4,
   },
   artworkImage: { width: 60, height: 60 },
-  authorLife: { marginVertical: 6 },
+  artworkImageTitle: {
+    flex: 1,
+    fontFamily: "Roboto-Regular",
+    fontSize: 12,
+    color: colors.darkBlack,
+  },
+  currentArtworkContainer: {
+    position: "absolute",
+    zIndex: 1,
+    width: screenSize.width,
+    height: screenSize.height,
+    padding: 12,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight! + 12 : 12,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
+  },
+  currentArtworkBackground: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.darkBlack,
+    opacity: 0.925,
+  },
+  currentArtworkImageContainer: {
+    backgroundColor: colors.white,
+    padding: 4,
+    borderRadius: 24,
+    overflow: "hidden",
+  },
+  currentArtworkImage: {
+    width: screenSize.width - 32,
+    aspectRatio: 1,
+    zIndex: 2,
+  },
+  currentArtworkTitle: {
+    zIndex: 2,
+    fontFamily: "Roboto-Regular",
+    fontSize: 32,
+    color: colors.white,
+  },
 });

@@ -41,7 +41,6 @@ export default function Search() {
           <TextInput
             value={query}
             onChange={(e) => {
-              // e.preventDefault();
               setIsLoading(true);
               setQuery(e.nativeEvent.text);
             }}
@@ -67,7 +66,17 @@ export default function Search() {
             keyExtractor={(_, index) => index.toString()}
           />
         ) : (
-          <></>
+          <>
+            {Array(7)
+              .fill("")
+              .map((_, i) => {
+                return (
+                  <View key={i} style={styles.itemAsync}>
+                    <View style={styles.imageAsync} />
+                  </View>
+                );
+              })}
+          </>
         )}
       </View>
     </>
@@ -98,5 +107,21 @@ const styles = StyleSheet.create({
     borderColor: colors.darkGray,
     color: colors.white,
     paddingHorizontal: 8,
+  },
+  itemAsync: {
+    width: screenWidth - 24,
+    marginHorizontal: 12,
+    marginTop: 8,
+    height: 80,
+    backgroundColor: colors.darkGray,
+    justifyContent: "center",
+    padding: 4,
+    borderRadius: 10,
+  },
+  imageAsync: {
+    width: 72,
+    height: 72,
+    backgroundColor: colors.darkBlack,
+    borderRadius: 6,
   },
 });

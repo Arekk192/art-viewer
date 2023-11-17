@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 8,
     marginBottom: 20,
+    elevation: 4,
   },
   image: {
     flex: 1,
@@ -153,7 +154,8 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    marginTop: 4,
+    marginTop: 6,
+    marginBottom: 2,
     fontSize: 32,
     fontFamily: "Sabon",
     color: colors.darkBlack,
