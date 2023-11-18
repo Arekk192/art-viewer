@@ -5,10 +5,10 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Item from "./components/Item";
 import colors from "../static/colors";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { ArtworkData, ScreenNavigationProps } from "../../App";
 
 export default function Search() {
@@ -17,22 +17,24 @@ export default function Search() {
   const [query, setQuery] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const fields =
-          "id,title,artist_display,artist_id,date_display,image_id,dimensions,description,latitude,longitude";
-        const res = await fetch(
-          `https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=${fields}`
-        );
-        const json = await res.json();
-        setData(json.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, [query]);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const fields =
+            "id,title,artist_display,artist_id,date_display,image_id,dimensions,description,latitude,longitude";
+          const res = await fetch(
+            `https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=${fields}`
+          );
+          const json = await res.json();
+          setData(json.data);
+          setIsLoading(false);
+        } catch (error) {
+          console.error(error);
+        }
+      })();
+    }, [query])
+  );
 
   return (
     <>

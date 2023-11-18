@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { PureComponent, useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
@@ -54,7 +54,7 @@ export default React.memo(function Item({
   };
 
   return (
-    <TouchableWithoutFeedback onLongPress={() => onPress()}>
+    <TouchableWithoutFeedback onPress={() => onPress()}>
       <View style={styles.artworkContainer}>
         <View style={styles.imageContainer}>
           <Image

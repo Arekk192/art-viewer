@@ -9,13 +9,15 @@ import {
   Platform,
   StatusBar,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import colors from "../../static/colors";
 import RenderHtml from "react-native-render-html";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { Author, ScreenNavigationParamList } from "../../../App";
 import { Defs, LinearGradient, Rect, Stop, Svg } from "react-native-svg";
 import MapView, { Marker } from "react-native-maps";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = BottomTabScreenProps<ScreenNavigationParamList, "Artwork">;
 
@@ -23,21 +25,23 @@ export default function Artwork({ navigation, route }: Props) {
   const [author, setAuthor] = useState<Author>();
   const artwork = route.params.artwork;
 
-  useEffect(() => {
-    // fetch for author component (executing in artwork component for
-    // saving user time so he doesn't have to wait later in author screen)
-    (async () => {
-      try {
-        const fields = "id,title,birth_date,death_date,description,is_artist";
-        const url = `https://api.artic.edu/api/v1/agents/${artwork.artist_id}?fields=${fields}`;
-        const response = await fetch(url);
-        const json = await response.json();
-        setAuthor(json["data"]);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, [artwork]);
+  useFocusEffect(
+    useCallback(() => {
+      // fetch for author component (executing in artwork component for
+      // saving user time so he doesn't have to wait later in author screen)
+      (async () => {
+        try {
+          const fields = "id,title,birth_date,death_date,description,is_artist";
+          const url = `https://api.artic.edu/api/v1/agents/${artwork.artist_id}?fields=${fields}`;
+          const response = await fetch(url);
+          const json = await response.json();
+          setAuthor(json["data"]);
+        } catch (error) {
+          console.error(error);
+        }
+      })();
+    }, [artwork])
+  );
 
   return (
     <View style={styles.container}>
@@ -76,13 +80,26 @@ export default function Artwork({ navigation, route }: Props) {
 
         {/* artwork data */}
         <View style={styles.imageContainer}>
-          <Image
-            source={{
-              uri: `https://www.artic.edu/iiif/2/${route.params.artwork.image_id}/full/600,/0/default.jpg`,
-            }}
+          <ReactNativeZoomableView
+            minZoom={1}
+            maxZoom={5}
+            zoomStep={0.5}
+            initialZoom={1}
+            bindToBorders
+            disablePanOnInitialZoom
+            visualTouchFeedbackEnabled={false}
+            contentWidth={screenWidth - 24}
+            contentHeight={screenWidth - 24}
             style={styles.image}
-            resizeMode="contain"
-          />
+          >
+            <Image
+              source={{
+                uri: `https://www.artic.edu/iiif/2/${route.params.artwork.image_id}/full/600,/0/default.jpg`,
+              }}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </ReactNativeZoomableView>
         </View>
         <Text style={styles.title}>{artwork.title}</Text>
         <Text style={styles.date}>{artwork.date_display}</Text>
@@ -115,7 +132,6 @@ export default function Artwork({ navigation, route }: Props) {
                   longitudeDelta: 0.0421,
                 }}
                 zoomEnabled={false}
-                pitchEnabled={false}
                 rotateEnabled={false}
                 scrollEnabled={false}
                 style={styles.map}

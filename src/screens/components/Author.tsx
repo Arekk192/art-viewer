@@ -39,6 +39,7 @@ export default function Author({ navigation, route }: Props) {
   useFocusEffect(
     useCallback(() => {
       // query for getting few (max 32) author artworks
+
       (async () => {
         try {
           const fields = "id,title,artist_id,image_id";
@@ -59,7 +60,7 @@ export default function Author({ navigation, route }: Props) {
           console.error(error);
         }
       })();
-    }, [])
+    }, [author])
   );
 
   return (
@@ -127,7 +128,7 @@ export default function Author({ navigation, route }: Props) {
           return (
             <TouchableWithoutFeedback
               key={i}
-              onLongPress={() =>
+              onPress={() =>
                 setCurrentArtwork({
                   image_id: el.image_id,
                   title: el.title,
