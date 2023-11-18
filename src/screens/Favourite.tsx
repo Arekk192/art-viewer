@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Item from "./components/Item";
 import colors from "../static/colors";
 import type { ArtworkData, ScreenNavigationProps } from "../../App";
+import BigList from "react-native-big-list";
 
 export default function Favourite() {
   const [favourites, setFavourites] = useState<ArtworkData[]>();
@@ -34,24 +35,28 @@ export default function Favourite() {
 
   return (
     <>
-      <FlatList
+      <BigList
         data={favourites}
         renderItem={({ item, index }) => (
-          <Item
-            data={item}
-            onPress={() => navigation.navigate("Artwork", { artwork: item })}
-            buttonOnPress={async () => {
-              await AsyncStorage.removeItem(item.id.toString());
-              setFavourites(favourites?.filter((_, i) => i != index));
-            }}
-          />
+          <>
+            <Item
+              data={item}
+              onPress={() => navigation.navigate("Artwork", { artwork: item })}
+              buttonOnPress={async () => {
+                await AsyncStorage.removeItem(item.id.toString());
+                setFavourites(favourites?.filter((_, i) => i != index));
+              }}
+            />
+            <View style={styles.padding} />
+          </>
         )}
-        ItemSeparatorComponent={() => <View style={styles.padding} />}
-        ListHeaderComponent={() => <View style={styles.padding} />}
-        ListFooterComponent={() => <View style={styles.padding} />}
-        showsVerticalScrollIndicator={false}
+        itemHeight={90}
+        sections={null}
+        renderHeader={() => <View style={styles.padding} />}
+        headerHeight={10}
+        renderFooter={() => <View style={styles.padding} />}
+        footerHeight={10}
         style={styles.flatlist}
-        keyExtractor={(_, index) => index.toString()}
       />
     </>
   );

@@ -1,7 +1,7 @@
 # art-viewer
 
 App for viewing works of art from Art Institude of Chicago. <br />
-Art Institude of Chicago API Documentation: \
+Art Institude of Chicago API Documentation:
 <a href="https://api.artic.edu/docs/">https://api.artic.edu/docs/</a><br /><br />
 
 ## Installation
@@ -27,7 +27,7 @@ npm run android
 App is divided to 3 main screens: Explore, Search and Favourite.
 There are displayed artworks in every of them.
 If you want to get some informations, such as dimensions, description, current location, etc., you can click it - this action will navigate you to Artwork screen.
-Every artwork has add to favourites button which allows user to save artwork data locally in AsyncStorage.
+Every artwork has "add to favourites" button which allows user to save artwork data locally in AsyncStorage.
 Code for this component is located in `./src/screens/components/Item.tsx`
 
 ### Explore
@@ -53,7 +53,7 @@ Screen with artwork data displayed:
 - dimensions
 - location (map) <br />
 
-Sometimes artwork data (for example description) don't exist
+Sometimes artwork data (for example description) doesn't exist
 
 ### Author
 
@@ -63,8 +63,6 @@ Here you can read details about author including:
 - years of life
 - description
 - list of artworks
-
-<br />
 
 ## APIs
 
@@ -79,6 +77,7 @@ Here you can read details about author including:
 - "expo-status-bar": "~1.6.0",
 - "react": "18.2.0",
 - "react-native": "0.72.6",
+- "react-native-big-list": "^1.6.1",
 - "react-native-maps": "1.7.1",
 - "react-native-render-html": "^6.3.4",
 - "react-native-svg": "13.9.0"

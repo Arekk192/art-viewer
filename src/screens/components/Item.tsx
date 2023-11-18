@@ -100,7 +100,7 @@ export default React.memo(function Item({
 
 const styles = StyleSheet.create({
   artworkContainer: {
-    flex: 1,
+    // flex: 1,
     height: 80,
     paddingLeft: 4,
     paddingRight: 8,

@@ -1,15 +1,10 @@
-import {
-  View,
-  TextInput,
-  FlatList,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import { View, TextInput, StyleSheet, Dimensions } from "react-native";
+import React, { useCallback, useState } from "react";
 import Item from "./components/Item";
 import colors from "../static/colors";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { ArtworkData, ScreenNavigationProps } from "../../App";
+import BigList from "react-native-big-list";
 
 export default function Search() {
   const navigation = useNavigation<ScreenNavigationProps>();
@@ -24,7 +19,7 @@ export default function Search() {
           const fields =
             "id,title,artist_display,artist_id,date_display,image_id,dimensions,description,latitude,longitude";
           const res = await fetch(
-            `https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=${fields}`
+            `https://api.artic.edu/api/v1/artworks/search?q=${query}&fields=${fields}&limit=${15}`
           );
           const json = await res.json();
           setData(json.data);
@@ -53,22 +48,26 @@ export default function Search() {
 
         {/* flatlist with data */}
         {!isLoading ? (
-          <FlatList
+          <BigList
             data={data}
             renderItem={({ item }) => (
-              <Item
-                data={item}
-                onPress={() =>
-                  navigation.navigate("Artwork", { artwork: item })
-                }
-              />
+              <>
+                <Item
+                  data={item}
+                  onPress={() =>
+                    navigation.navigate("Artwork", { artwork: item })
+                  }
+                />
+                <View style={styles.padding} />
+              </>
             )}
-            ItemSeparatorComponent={() => <View style={styles.padding} />}
-            ListHeaderComponent={() => <View style={styles.padding} />}
-            ListFooterComponent={() => <View style={styles.padding} />}
-            showsVerticalScrollIndicator={false}
+            itemHeight={90}
+            sections={null}
+            renderHeader={() => <View style={styles.padding} />}
+            headerHeight={10}
+            renderFooter={() => <View style={styles.padding} />}
+            footerHeight={10}
             style={styles.flatlist}
-            keyExtractor={(_, index) => index.toString()}
           />
         ) : (
           // component simulating artworks while data is loading
